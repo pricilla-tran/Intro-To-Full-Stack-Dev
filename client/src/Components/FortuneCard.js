@@ -2,21 +2,29 @@ import React, {useState} from 'react';
 import {deleteFortune, updateFortune} from "../APIConnection/ApiFunctions.js";
 
 function FortuneCard(props) {
-    const [isEditing, setIsEditing] = useState()
-    const [newFortune, setNewFortune] = useState();
+    
+    const {_id, fortuneName} = props.fortune;
+    const [isEditing, setIsEditing] = useState(false)
+    const [newFortune, setNewFortune] = useState(fortuneName);
 
-    async function edit() {
+    async function edit(fortuneText) {
+        await updateFortune(_id, newFortune);
+        setIsEditing(false);
     }
 
     return (
         <div className="fortune-card cursive">
-            some text
-            <button className="fortune-card-button">❌</button>
-            <button className="fortune-card-button">📝</button>
-            <div className="edit-fortune">
-                <input id="add-fortune-input" type="text"/>
-                <button className="button">Edit fortune</button>
-            </div>
+            {fortuneName}
+            <button className="fortune-card-button" onClick={() => {deleteFortune(_id)}}>❌</button>
+            <button className="fortune-card-button" onClick={() => {setIsEditing(!isEditing)}}>📝</button>
+            {isEditing ?
+                <div className="edit-fortune">
+                    <input value={newFortune} onChange={(e) => {setNewFortune(e.target.value)}} id="add-fortune-input" type="text"/>
+                    <button onClick={edit} className="button">Edit fortune</button>
+                </div>
+                :
+                ""
+            }
         </div>
     );
 }
